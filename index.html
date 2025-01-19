@@ -87,7 +87,7 @@
         <div class="unit-toggle">
             <label>
                 <input type="radio" name="units" value="metric" checked onclick="toggleUnits('metric')">
-                Metric (kg/m)
+                Metric (kg/cm)
             </label>
             <label>
                 <input type="radio" name="units" value="imperial" onclick="toggleUnits('imperial')">
@@ -100,8 +100,8 @@
             <input type="number" id="weight" placeholder="Enter weight">
         </div>
         <div class="input-group">
-            <label for="height">Height (<span id="heightUnit">m</span>):</label><br>
-            <input type="number" id="height" step="0.01" placeholder="Enter height">
+            <label for="height">Height (<span id="heightUnit">cm</span>):</label><br>
+            <input type="number" id="height" step="1" placeholder="Enter height">
         </div>
         <button onclick="calculateBMI()">Calculate BMI</button>
         <div id="result"></div>
@@ -122,8 +122,8 @@
             currentUnit = unit;
             if (unit === 'metric') {
                 document.getElementById('weightUnit').textContent = 'kg';
-                document.getElementById('heightUnit').textContent = 'm';
-                document.getElementById('height').step = '0.01';
+                document.getElementById('heightUnit').textContent = 'cm';
+                document.getElementById('height').step = '1';
             } else {
                 document.getElementById('weightUnit').textContent = 'lbs';
                 document.getElementById('heightUnit').textContent = 'inches';
@@ -141,9 +141,13 @@
                 let bmi;
                 
                 if (currentUnit === 'imperial') {
+                    // Imperial formula: (weight in pounds * 703) / (height in inches)²
                     bmi = (weight * 703) / (height * height);
                 } else {
-                    bmi = weight / (height * height);
+                    // Metric formula: weight in kg / (height in meters)²
+                    // Convert cm to m by dividing by 100
+                    const heightInMeters = height / 100;
+                    bmi = weight / (heightInMeters * heightInMeters);
                 }
 
                 let category = '';
