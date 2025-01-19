@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BMI Calculator</title>
+    <title>Enhanced BMI Calculator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -39,6 +39,16 @@
             margin-top: 20px;
             font-weight: bold;
         }
+        .unit-toggle {
+            margin: 20px 0;
+        }
+        .unit-toggle label {
+            margin: 0 10px;
+            cursor: pointer;
+        }
+        .input-group {
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
@@ -46,27 +56,65 @@
     <p>Calculate your Body Mass Index</p>
     
     <div class="calculator">
-        <div>
-            <label for="weight">Weight (kg):</label><br>
-            <input type="number" id="weight" placeholder="Enter weight in kg">
+        <div class="unit-toggle">
+            <label>
+                <input type="radio" name="units" value="metric" checked onclick="toggleUnits('metric')">
+                Metric (kg/m)
+            </label>
+            <label>
+                <input type="radio" name="units" value="imperial" onclick="toggleUnits('imperial')">
+                Imperial (lbs/in)
+            </label>
         </div>
-        <div>
-            <label for="height">Height (m):</label><br>
-            <input type="number" id="height" step="0.01" placeholder="Enter height in meters">
+
+        <div class="input-group">
+            <label for="weight">Weight (<span id="weightUnit">kg</span>):</label><br>
+            <input type="number" id="weight" placeholder="Enter weight">
+        </div>
+        <div class="input-group">
+            <label for="height">Height (<span id="heightUnit">m</span>):</label><br>
+            <input type="number" id="height" step="0.01" placeholder="Enter height">
         </div>
         <button onclick="calculateBMI()">Calculate BMI</button>
         <div id="result"></div>
     </div>
 
     <script>
+        let currentUnit = 'metric';
+
+        function toggleUnits(unit) {
+            currentUnit = unit;
+            if (unit === 'metric') {
+                document.getElementById('weightUnit').textContent = 'kg';
+                document.getElementById('heightUnit').textContent = 'm';
+                document.getElementById('height').step = '0.01';
+            } else {
+                document.getElementById('weightUnit').textContent = 'lbs';
+                document.getElementById('heightUnit').textContent = 'inches';
+                document.getElementById('height').step = '1';
+            }
+            // Clear previous results when switching units
+            document.getElementById('result').innerHTML = '';
+        }
+
         function calculateBMI() {
-            const weight = parseFloat(document.getElementById('weight').value);
-            const height = parseFloat(document.getElementById('height').value);
+            let weight = parseFloat(document.getElementById('weight').value);
+            let height = parseFloat(document.getElementById('height').value);
             
             if (weight && height) {
-                const bmi = weight / (height * height);
-                let category = '';
+                let bmi;
                 
+                if (currentUnit === 'imperial') {
+                    // Convert imperial to metric for BMI calculation
+                    // BMI = (weight in pounds * 703) / (height in inches)²
+                    bmi = (weight * 703) / (height * height);
+                } else {
+                    // Metric calculation
+                    // BMI = weight in kg / (height in m)²
+                    bmi = weight / (height * height);
+                }
+
+                let category = '';
                 if (bmi < 18.5) {
                     category = 'Underweight';
                 } else if (bmi < 25) {
