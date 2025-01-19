@@ -17,6 +17,7 @@
             padding: 20px;
             border-radius: 8px;
             margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         input {
             width: 200px;
@@ -37,6 +38,8 @@
         }
         #result {
             margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
             font-weight: bold;
         }
         .unit-toggle {
@@ -49,6 +52,31 @@
         .input-group {
             margin: 10px 0;
         }
+        .resources {
+            margin-top: 20px;
+            text-align: left;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .resources h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .resources a {
+            color: #3498db;
+            text-decoration: none;
+            line-height: 1.6;
+            display: block;
+            margin: 5px 0;
+        }
+        .resources a:hover {
+            text-decoration: underline;
+        }
+        .underweight { background-color: #89CFF0; }
+        .normal { background-color: #90EE90; }
+        .overweight { background-color: #FFD700; }
+        .obese { background-color: #FFB6C1; }
     </style>
 </head>
 <body>
@@ -77,6 +105,14 @@
         </div>
         <button onclick="calculateBMI()">Calculate BMI</button>
         <div id="result"></div>
+
+        <div class="resources">
+            <h3>Reliable Health Resources</h3>
+            <a href="https://www.cdc.gov/healthyweight/assessing/bmi/index.html" target="_blank">CDC - About BMI for Adults</a>
+            <a href="https://www.nhlbi.nih.gov/health/educational/lose_wt/BMI/bmicalc.htm" target="_blank">National Heart, Lung, and Blood Institute - BMI Information</a>
+            <a href="https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight" target="_blank">World Health Organization - Obesity and Overweight Facts</a>
+            <p style="font-size: 0.9em; color: #666; margin-top: 15px;">Note: BMI is just one measure of health. For personalized health advice, please consult with a healthcare provider.</p>
+        </div>
     </div>
 
     <script>
@@ -93,8 +129,8 @@
                 document.getElementById('heightUnit').textContent = 'inches';
                 document.getElementById('height').step = '1';
             }
-            // Clear previous results when switching units
             document.getElementById('result').innerHTML = '';
+            document.getElementById('result').className = '';
         }
 
         function calculateBMI() {
@@ -105,29 +141,34 @@
                 let bmi;
                 
                 if (currentUnit === 'imperial') {
-                    // Convert imperial to metric for BMI calculation
-                    // BMI = (weight in pounds * 703) / (height in inches)²
                     bmi = (weight * 703) / (height * height);
                 } else {
-                    // Metric calculation
-                    // BMI = weight in kg / (height in m)²
                     bmi = weight / (height * height);
                 }
 
                 let category = '';
+                let colorClass = '';
+                
                 if (bmi < 18.5) {
                     category = 'Underweight';
+                    colorClass = 'underweight';
                 } else if (bmi < 25) {
                     category = 'Normal weight';
+                    colorClass = 'normal';
                 } else if (bmi < 30) {
                     category = 'Overweight';
+                    colorClass = 'overweight';
                 } else {
                     category = 'Obese';
+                    colorClass = 'obese';
                 }
                 
-                document.getElementById('result').innerHTML = `Your BMI is: ${bmi.toFixed(1)} - ${category}`;
+                const result = document.getElementById('result');
+                result.innerHTML = `Your BMI is: ${bmi.toFixed(1)} - ${category}`;
+                result.className = colorClass;
             } else {
                 document.getElementById('result').innerHTML = 'Please enter both weight and height';
+                document.getElementById('result').className = '';
             }
         }
     </script>
